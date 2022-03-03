@@ -1,11 +1,31 @@
-const express = require("express");
-const PORT = process.env.PORT || 5000;
 require("dotenv").config();
+const express = require("express");
 const app = express();
+const cors = require("cors");
+const db = require("./config/db");
+const server = require("http").createServer(app);
 
-app.set("port", process.env.PORT || 5000);
+const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+db.connect(function (err) {
+  if (err) {
+    console.log("ERROR CONNECTING: " + err);
+    return;
+  } else {
+    console.log("MySQL Database Connected");
+  }
+});
+
+app.set("port", PORT);
+
+app.use(cors());
+app.use(express.json());
+
+// routes
+
+app.use("/api/users", require("./routes/users"));
+
+server.listen(PORT, () => {
   console.log("Server listening on port " + PORT);
 });
 
