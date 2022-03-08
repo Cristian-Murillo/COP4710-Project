@@ -45,4 +45,57 @@ router.get("/", async (req, res) => {
   disconnectDB();
 });
 
+// signup a user
+// TODO ---- hash password
+router.post("/signup", async (req, res) => {
+  connectDB();
+  //-------------------------------------------------------TO DO
+  // get isADMIN and isSuperAdmin and make another query and insert user
+
+  db.query(
+    "INSERT INTO user (email, password) VALUES (?, ?)",
+    [req.body.email, req.body.password],
+    (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        // sending token somewhere here-----------------------TO DO
+        res.status(200).json({
+          text: "SUCCESS",
+          token: "TOKEN HERE!!!",
+        });
+      }
+    }
+  );
+  disconnectDB();
+});
+
+// login in a user
+router.post("/login", async (req, res) => {
+  connectDB();
+
+  db.query(
+    "SELECT email, password FROM `user` WHERE `email`=?",
+    [req.body.email],
+    (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        if (result.length === 0) {
+          return res.status(422).json({
+            message: "User Not Found",
+          });
+        }
+        if (result[0].password === req.body.password) {
+          res.status(200).json({ message: "SUCCESS" });
+        } else {
+          res.status(422).json({ message: "Incorrect Password" });
+          return;
+        }
+      }
+    }
+  );
+  disconnectDB();
+});
+
 module.exports = router;
