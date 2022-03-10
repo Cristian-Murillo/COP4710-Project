@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 const paperStyle = {
   padding: "30px 20px",
@@ -11,11 +19,22 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [conPass, setConPass] = useState("");
-  const [err, setErr] = useState("");
+  const [superAdmin, setSuperAdmin] = useState(false);
+  const [admin, setAdmin] = useState(false);
 
-  const handleSumbit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+
+    const newUser = {
+      email,
+      password,
+      admin,
+      superAdmin,
+    };
+    console.log(newUser);
+    return;
   };
+
   return (
     <Grid>
       <Paper elevation={20} style={paperStyle}>
@@ -25,8 +44,9 @@ const Register = () => {
             Please fill out form to create an account
           </Typography>
         </Grid>
-        <form>
+        <form onSubmit={handleSubmit}>
           <TextField
+            name="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -38,9 +58,10 @@ const Register = () => {
           ></TextField>
           <TextField
             required
+            minLength={4}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            error={password !== conPass ? true : false}
+            error={password !== conPass || !password.length >= 4 ? true : false}
             type="password"
             fullWidth
             variant="standard"
@@ -51,14 +72,32 @@ const Register = () => {
             required
             value={conPass}
             onChange={(e) => setConPass(e.target.value)}
-            error={password !== conPass ? true : false}
+            error={password !== conPass || !conPass.length >= 4 ? true : false}
             type="password"
             fullWidth
             variant="standard"
             label="Confirm password"
             placeholder="Please enter your password"
           ></TextField>
-          <Button type="submit" variant="contained" color="primary">
+          <FormControlLabel
+            label="Super Admin"
+            control={<Checkbox onChange={() => setSuperAdmin(!superAdmin)} />}
+          />
+
+          <FormControlLabel
+            label="Admin"
+            control={<Checkbox onChange={() => setAdmin(!admin)} />}
+          />
+          <Button
+            disabled={
+              !/\S+@\S+\.\S+/.test(email) ||
+              password !== conPass ||
+              password.length < 4
+            }
+            type="submit"
+            variant="contained"
+            color="primary"
+          >
             Submit
           </Button>
         </form>
