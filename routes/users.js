@@ -49,15 +49,14 @@ router.get("/", async (req, res) => {
 // TODO ---- hash password
 router.post("/signup", async (req, res) => {
   connectDB();
-  //-------------------------------------------------------TO DO
-  // get isADMIN and isSuperAdmin and make another query and insert user
 
   db.query(
-    "INSERT INTO user (email, password) VALUES (?, ?)",
-    [req.body.email, req.body.password],
+    "INSERT INTO user (email, password, isAdmin, isSuperAdmin ) VALUES (?, ?, ?, ?)",
+    [req.body.email, req.body.password, req.body.admin, req.body.superAdmin],
     (error, result) => {
       if (error) {
         console.log(error);
+        res.status(422).json({ ERR: error });
       } else {
         // sending token somewhere here-----------------------TO DO
         res.status(200).json({
@@ -67,6 +66,7 @@ router.post("/signup", async (req, res) => {
       }
     }
   );
+
   disconnectDB();
 });
 
@@ -91,6 +91,49 @@ router.post("/login", async (req, res) => {
         } else {
           res.status(422).json({ message: "Incorrect Password" });
           return;
+        }
+      }
+    }
+  );
+  disconnectDB();
+});
+
+// is Admin
+
+router.get("/admin/:id", async (req, res) => {
+  connectDB();
+  db.query(
+    "SELECT user_id FROM user WHERE isAdmin=1 AND user_id=?",
+    req.params.id,
+    (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        if (result.length === 0) {
+          res.status(200).json({ msg: "NOT ADMIN" });
+        } else {
+          res.status(200).json({ msg: "IS ADMIN" });
+        }
+      }
+    }
+  );
+  disconnectDB();
+});
+// is Super Admin
+
+router.get("/superadmin/:id", async (req, res) => {
+  connectDB();
+  db.query(
+    "SELECT user_id FROM user WHERE isSuperAdmin=1 AND user_id=?",
+    req.params.id,
+    (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        if (result.length === 0) {
+          res.status(200).json({ msg: "NOT SUPERADMIN" });
+        } else {
+          res.status(200).json({ msg: "IS SUPERADMIN" });
         }
       }
     }

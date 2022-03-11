@@ -13,6 +13,8 @@ app.use(express.json());
 // routes
 app.use("/api/users", require("./routes/users"));
 
+app.use("/api/events", require("./routes/event"));
+
 app.listen(PORT, () => {
   console.log("Server listening on port " + PORT);
 });
