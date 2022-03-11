@@ -19,8 +19,8 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [conPass, setConPass] = useState("");
-  const [superAdmin, setSuperAdmin] = useState(false);
-  const [admin, setAdmin] = useState(false);
+  const [superAdmin, setSuperAdmin] = useState(0);
+  const [admin, setAdmin] = useState(0);
 
   const handleSubmit = (e) => {
     e.preventDefault();
