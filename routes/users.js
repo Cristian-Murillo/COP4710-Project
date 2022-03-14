@@ -2,7 +2,8 @@ const express = require("express");
 const mysql = require("mysql");
 const router = express.Router();
 require("dotenv").config();
-
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 var db;
 
 // Function to start connection to DB before query
@@ -46,36 +47,36 @@ router.get("/", async (req, res) => {
 });
 
 // signup a user
-// TODO ---- hash password
 router.post("/signup", async (req, res) => {
-  connectDB();
-
-  db.query(
-    "INSERT INTO user (email, password, isAdmin, isSuperAdmin ) VALUES (?, ?, ?, ?)",
-    [req.body.email, req.body.password, req.body.admin, req.body.superAdmin],
-    (error, result) => {
-      if (error) {
-        console.log(error);
-        res.status(422).json({ ERR: error });
-      } else {
-        // sending token somewhere here-----------------------TO DO
-        res.status(200).json({
-          text: "SUCCESS",
-          token: "TOKEN HERE!!!",
-        });
-      }
-    }
-  );
-
-  disconnectDB();
+  bcrypt.genSalt(10, function (err, salt) {
+    bcrypt.hash(req.body.password, salt, function (err, hash) {
+      connectDB();
+      db.query(
+        "INSERT INTO user (email, password, isAdmin, isSuperAdmin ) VALUES (?, ?, ?, ?)",
+        [req.body.email, hash, req.body.admin, req.body.superAdmin],
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(422).json({ ERR: error });
+          } else {
+            res.status(200).json({
+              text: "Signup Successful ",
+            });
+          }
+        }
+      );
+      disconnectDB();
+    });
+  });
 });
 
 // login in a user
 router.post("/login", async (req, res) => {
+  var ret;
   connectDB();
 
   db.query(
-    "SELECT email, password FROM `user` WHERE `email`=?",
+    "SELECT user_id, email, password FROM `user` WHERE `email`=?",
     [req.body.email],
     (error, result) => {
       if (error) {
@@ -86,12 +87,23 @@ router.post("/login", async (req, res) => {
             message: "User Not Found",
           });
         }
-        if (result[0].password === req.body.password) {
-          res.status(200).json({ message: "SUCCESS" });
-        } else {
-          res.status(422).json({ message: "Incorrect Password" });
-          return;
-        }
+        bcrypt.compare(
+          req.body.password,
+          result[0].password,
+          function (err, resp) {
+            if (resp) {
+              try {
+                const token = require("../createJWT");
+                ret = token.createToken(result[0].user_id);
+              } catch (e) {
+                ret = { error: e.message };
+              }
+              res.status(200).json(ret);
+            } else {
+              res.status(422).json({ message: "Incorrect Password" });
+            }
+          }
+        );
       }
     }
   );
@@ -99,7 +111,6 @@ router.post("/login", async (req, res) => {
 });
 
 // is Admin
-
 router.get("/admin/:id", async (req, res) => {
   connectDB();
   db.query(
@@ -119,8 +130,8 @@ router.get("/admin/:id", async (req, res) => {
   );
   disconnectDB();
 });
-// is Super Admin
 
+// is Super Admin
 router.get("/superadmin/:id", async (req, res) => {
   connectDB();
   db.query(

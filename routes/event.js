@@ -32,10 +32,36 @@ function disconnectDB() {
   });
 }
 
-// get all public event
-router.get("/", async (req, res) => {
+// get all public events
+router.get("/public", async (req, res) => {
   connectDB();
-  db.query("SELECT * FROM event", (error, result) => {
+  db.query("SELECT * FROM event WHERE isPublic=1", (error, result) => {
+    if (error) {
+      console.log(error);
+    } else {
+      res.status(200).json(result);
+    }
+  });
+  disconnectDB();
+});
+
+// get all RSO events
+router.get("/rso", async (req, res) => {
+  connectDB();
+  db.query("SELECT * FROM event WHERE isRSO=1", (error, result) => {
+    if (error) {
+      console.log(error);
+    } else {
+      res.send(result);
+    }
+  });
+  disconnectDB();
+});
+
+// get all Private events
+router.get("/private", async (req, res) => {
+  connectDB();
+  db.query("SELECT * FROM event WHERE isPrivate=1", (error, result) => {
     if (error) {
       console.log(error);
     } else {
