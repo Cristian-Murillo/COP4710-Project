@@ -152,4 +152,71 @@ router.get("/superadmin/:id", async (req, res) => {
   disconnectDB();
 });
 
+// create RSO group
+router.post("/create/rso", async (req, res) => {
+  // check if user is admin
+  connectDB();
+  db.query(
+    "SELECT user_id FROM user WHERE isAdmin=1 AND user_id=?",
+    req.body.id,
+    (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        if (result.length === 0) {
+          res.status(200).json({ msg: "Admins only allowed to create RSO" });
+        } else {
+          connectDB();
+          db.query(
+            "INSERT INTO rso (rso_name, user_id) VALUES (?, ?)",
+            [req.body.rso_name, req.body.id],
+            (error, result) => {
+              if (error) {
+                console.log(error);
+              } else {
+                res.status(200).json({ msg: "rso created" });
+              }
+            }
+          );
+          disconnectDB();
+        }
+      }
+    }
+  );
+  disconnectDB();
+});
+
+// join RSO group
+router.post("/join/rso", async (req, res) => {
+  connectDB();
+  db.query(
+    "SELECT rso_name FROM rso WHERE rso_name=?",
+    req.body.rso_name,
+    (error, result) => {
+      if (error) {
+        res.status(412).json({ err: error });
+      } else {
+        if (result.length === 0) {
+          res.status(412).json({ msg: "rso doesn't exist" });
+        } else {
+          connectDB();
+          db.query(
+            "INSERT INTO rso (rso_name, user_id) VALUES (?, ?)",
+            [req.body.rso_name, req.body.id],
+            (error, result) => {
+              if (error) {
+                console.log(error);
+              } else {
+                res.status(200).json({ msg: "You joined rso" });
+              }
+            }
+          );
+          disconnectDB();
+        }
+      }
+    }
+  );
+  disconnectDB();
+});
+
 module.exports = router;

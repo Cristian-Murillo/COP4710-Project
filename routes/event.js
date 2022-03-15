@@ -1,3 +1,4 @@
+const { Splitscreen } = require("@mui/icons-material");
 const express = require("express");
 const mysql = require("mysql");
 const router = express.Router();
@@ -72,8 +73,9 @@ router.get("/private", async (req, res) => {
 });
 
 // create events
-// ADD ADDRESS STUFF -----------------------------------------
-router.post("/create", async (req, res) => {
+
+// creating public/ private event
+router.post("/create/", async (req, res) => {
   connectDB();
   // check if user is admin or super admin
   db.query(
@@ -89,7 +91,7 @@ router.post("/create", async (req, res) => {
           // authorized to create event
           connectDB();
           db.query(
-            "INSERT INTO event (eventName, eventDate, description, contactEmail, isRSO, isPublic, isPrivate) VALUES(?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO event (eventName, eventDate, description, contactEmail, isRSO, isPublic, isPrivate, address) VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
             [
               req.body.eventName,
               req.body.eventDate,
@@ -98,6 +100,7 @@ router.post("/create", async (req, res) => {
               req.body.isRSO,
               req.body.isPublic,
               req.body.isPrivate,
+              req.body.address,
             ],
             (error, result) => {
               if (error) {
@@ -112,7 +115,68 @@ router.post("/create", async (req, res) => {
       }
     }
   );
+  disconnectDB();
+});
 
+// create rso event
+router.post("/create/rso", async (req, res) => {
+  // check if admin
+  connectDB();
+  db.query(
+    "SELECT user_id FROM user WHERE isAdmin=1 AND user_id=?",
+    req.body.id,
+    (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        if (result.length === 0) {
+          res.status(200).json({ msg: "Admins can only create rso events" });
+        } else {
+          // check count of rso >=5
+          connectDB();
+          db.query(
+            "SELECT rso_name FROM rso WHERE rso_name=?",
+            req.body.rso_name,
+            (err, resp) => {
+              if (err) {
+                console.log(err);
+              } else {
+                if (resp.length >= 5) {
+                  connectDB();
+                  db.query(
+                    "INSERT INTO event (eventName, eventDate, description, contactEmail, isRSO, isPublic, isPrivate, address) VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
+                    [
+                      req.body.eventName,
+                      req.body.eventDate,
+                      req.body.description,
+                      req.body.contactEmail,
+                      1,
+                      0,
+                      0,
+                      req.body.address,
+                    ],
+                    (er, response) => {
+                      if (er) {
+                        console.log(er);
+                      } else {
+                        res.status(200).json({ msg: "RSO event created" });
+                      }
+                    }
+                  );
+                  disconnectDB();
+                } else {
+                  res.status(412).json({
+                    msg: "Not enough members in rso group to create event",
+                  });
+                }
+              }
+            }
+          );
+          disconnectDB();
+        }
+      }
+    }
+  );
   disconnectDB();
 });
 
