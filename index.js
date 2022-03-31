@@ -16,6 +16,8 @@ app.use("/api/users", require("./routes/users"));
 
 app.use("/api/events", require("./routes/event"));
 
+app.use("/api/comments", require("./routes/comment"));
+
 app.listen(PORT, () => {
   console.log("Server listening on port " + PORT);
 });
