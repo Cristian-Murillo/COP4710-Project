@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Button,
-  Checkbox,
   FormControlLabel,
   Grid,
   Paper,
+  Radio,
+  RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
@@ -22,16 +24,43 @@ const Register = () => {
   const [superAdmin, setSuperAdmin] = useState(0);
   const [admin, setAdmin] = useState(0);
 
+  var bp = require("./Path");
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const newUser = {
-      email,
-      password,
-      admin,
-      superAdmin,
+      email: email,
+      password: password,
+      admin: admin,
+      superAdmin: superAdmin,
     };
-    console.log(newUser);
+    var newUserjson = JSON.stringify(newUser);
+
+    var config = {
+      method: "post",
+      url: bp.buildPath("api/users/signup"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: newUserjson,
+    };
+
+    axios(config)
+      .then(function (response) {
+        var res = response.data;
+
+        if (res.error) {
+          // will need changing later to another page
+          window.location.href = "/";
+        } else {
+          window.location.href = "/";
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
     return;
   };
 
@@ -79,15 +108,36 @@ const Register = () => {
             label="Confirm password"
             placeholder="Please enter your password"
           ></TextField>
-          <FormControlLabel
+          {/* <FormControlLabel
             label="Super Admin"
             control={<Checkbox onChange={() => setSuperAdmin(!superAdmin)} />}
           />
-
           <FormControlLabel
             label="Admin"
             control={<Checkbox onChange={() => setAdmin(!admin)} />}
-          />
+          /> */}
+          {/*might need improvement */}
+          <RadioGroup>
+            <FormControlLabel
+              value="user"
+              control={
+                <Radio
+                  onChange={() => setAdmin(admin) && setSuperAdmin(superAdmin)}
+                />
+              }
+              label="User"
+            />
+            <FormControlLabel
+              value="superAdmin"
+              control={<Radio onChange={() => setSuperAdmin(!superAdmin)} />}
+              label="Super Admin"
+            />
+            <FormControlLabel
+              value="admin"
+              control={<Radio onChange={() => setAdmin(!admin)} />}
+              label="Admin"
+            />
+          </RadioGroup>
           <Button
             disabled={
               !/\S+@\S+\.\S+/.test(email) ||
