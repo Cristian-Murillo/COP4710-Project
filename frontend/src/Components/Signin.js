@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import { UserContext } from "./UserContext";
+import axios from "axios";
 
 const paperStyle = {
   padding: "30px 20px",
@@ -7,19 +9,43 @@ const paperStyle = {
   margin: "auto",
 };
 
-const Signin = () => {
+var bp = require("./Path");
+var storage = require("../tokenStorage.js");
+
+const Signin = (setUser) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // const { setUser } = useContext(UserContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const loginCredentials = {
       email,
       password,
     };
-    console.log(loginCredentials);
-    return;
+
+    var config = {
+      method: "post",
+      url: bp.buildPath("api/users/login"),
+      // headers: { Authorization:"TOKEN GOES HERE"}
+      data: loginCredentials,
+    };
+    axios(config)
+      .then(function (resp) {
+        var res = resp.data;
+        if (res.error) {
+          console.log(res.error);
+        } else {
+          console.log(res);
+          setUser(res.accessToken);
+
+          window.location.href = "/";
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   };
 
   return (
@@ -57,7 +83,7 @@ const Signin = () => {
           <Button type="submit" variant="contained" color="primary">
             Login
           </Button>
-          <Button>Sign Up</Button>
+          <Button href="/register">Sign Up</Button>
         </form>
       </Paper>
     </Grid>

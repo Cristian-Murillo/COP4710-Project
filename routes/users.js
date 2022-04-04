@@ -24,6 +24,25 @@ function connectDB() {
   });
 }
 
+const authenticateJWT = (req, res, next) => {
+  const authHeader = "Bearer " + req.headers.authorization;
+  console.log(authHeader);
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+
+      req.user = user;
+      next();
+    });
+  } else {
+    res.sendStatus(401);
+  }
+};
+
 // Function to end connection to prevent fatal error
 // always end connection after creating one
 function disconnectDB() {
@@ -43,6 +62,23 @@ router.get("/", async (req, res) => {
       res.send(result);
     }
   });
+  disconnectDB();
+});
+
+// get current user info
+router.get("/:id", authenticateJWT, async (req, res) => {
+  connectDB();
+  db.query(
+    "SELECT * FROM user WHERE user_id=?",
+    req.params.id,
+    (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        res.send(result);
+      }
+    }
+  );
   disconnectDB();
 });
 
@@ -90,8 +126,9 @@ router.post("/login", async (req, res) => {
         bcrypt.compare(
           req.body.password,
           result[0].password,
-          function (err, resp) {
-            if (resp) {
+          function (err, response) {
+            console.log(response);
+            if (response) {
               try {
                 const token = require("../createJWT");
                 ret = token.createToken(result[0].user_id);
