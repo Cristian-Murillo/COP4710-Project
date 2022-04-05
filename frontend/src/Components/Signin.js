@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
 import { UserContext } from "./UserContext";
-import axios from "axios";
+import { loginCall } from "./ApiCalls";
 
 const paperStyle = {
   padding: "30px 20px",
@@ -9,13 +9,10 @@ const paperStyle = {
   margin: "auto",
 };
 
-var bp = require("./Path");
-var storage = require("../tokenStorage.js");
-
-const Signin = (setUser) => {
+export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const { setUser } = useContext(UserContext);
+  const { dispatch } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,28 +21,7 @@ const Signin = (setUser) => {
       email,
       password,
     };
-
-    var config = {
-      method: "post",
-      url: bp.buildPath("api/users/login"),
-      // headers: { Authorization:"TOKEN GOES HERE"}
-      data: loginCredentials,
-    };
-    axios(config)
-      .then(function (resp) {
-        var res = resp.data;
-        if (res.error) {
-          console.log(res.error);
-        } else {
-          console.log(res);
-          setUser(res.accessToken);
-
-          window.location.href = "/";
-        }
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    loginCall(loginCredentials, dispatch);
   };
 
   return (
@@ -88,6 +64,4 @@ const Signin = (setUser) => {
       </Paper>
     </Grid>
   );
-};
-
-export default Signin;
+}

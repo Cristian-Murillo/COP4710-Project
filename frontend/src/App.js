@@ -1,26 +1,29 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
 import Signup from "./Pages/Signup";
 import Login from "./Pages/Login";
 import EventList from "./Components/EventList";
-import { UserContext } from "./Components/UserContext";
 import { Link } from "react-router-dom";
+import { UserContext } from "./Components/UserContext";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const { user } = useContext(UserContext);
   return (
     <Router>
-      <UserContext.Provider value={{ user, setUser }}>
-        <Routes>
-          <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route path="/register" element={<Signup />} />
-          <Route
-            exact
-            path="/"
-            element={user ? <Link to="/" /> : <EventList />}
-          />
-        </Routes>
-      </UserContext.Provider>
+      <Routes>
+        <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+        <Route path="/register" element={<Signup />} />
+        <Route
+          exact
+          path="/"
+          element={user ? <EventList /> : <Navigate to="/login" />}
+        />
+      </Routes>
     </Router>
   );
 }

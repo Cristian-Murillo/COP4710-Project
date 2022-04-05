@@ -9,8 +9,8 @@ const EventList = () => {
   const [eventList, setEventList] = useState([]);
   const [rsoList, setRsoList] = useState([]);
   const [privateEventList, setPrivateEventList] = useState([]);
-
   const { user } = useContext(UserContext);
+  
 
   useEffect(() => {
     const getEvents = async () => {
@@ -50,9 +50,28 @@ const EventList = () => {
     getRsoEvents();
   }, [rsoList.event_id]);
 
+  useEffect(() => {
+    const getPrivateEvents = async () => {
+      try {
+        var config = {
+          method: "get",
+          url: bp.buildPath("api/events/private/"),
+          // headers: { Authorization:"TOKEN GOES HERE"}
+        };
+
+        const resp = await axios(config);
+
+        setRsoList(resp.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getPrivateEvents();
+  }, [rsoList.event_id]);
+
   return (
     <div>
-      <Typography variant="h1">{user}</Typography>
+      <Typography variant="b1">{user.accessToken}</Typography>
       <div>
         {eventList.map((e) => (
           <Event key={e.event_id} event={e} />
