@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import Signup from "./Pages/Signup";
 import Login from "./Pages/Login";
-import EventList from "./Components/EventList";
+import Home from "./Pages/Home";
 import { Link } from "react-router-dom";
 import { UserContext } from "./Components/UserContext";
 
@@ -21,7 +21,7 @@ function App() {
         <Route
           exact
           path="/"
-          element={user ? <EventList /> : <Navigate to="/login" />}
+          element={user ? <Home /> : <Navigate to="/login" />}
         />
       </Routes>
     </Router>

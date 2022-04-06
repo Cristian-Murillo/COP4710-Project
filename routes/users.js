@@ -112,15 +112,16 @@ router.post("/login", async (req, res) => {
   connectDB();
 
   db.query(
-    "SELECT user_id, email, password FROM `user` WHERE `email`=?",
+    "SELECT * FROM user WHERE email=?",
     [req.body.email],
     (error, result) => {
       if (error) {
         console.log(error);
       } else {
+        console.log(result);
         if (result.length === 0) {
           return res.status(422).json({
-            message: "User Not Found",
+            error: "User Not Found",
           });
         }
         bcrypt.compare(
@@ -135,9 +136,16 @@ router.post("/login", async (req, res) => {
               } catch (e) {
                 ret = { error: e.message };
               }
-              res.status(200).json(ret);
+              const user = {
+                id: result[0].user_id,
+                email: result[0].email,
+                isAdmin: result[0].isAdmin,
+                isSuperAdmin: result[0].isSuperAdmin,
+                accessToken: ret.accessToken,
+              };
+              res.status(200).json(user);
             } else {
-              res.status(422).json({ message: "Incorrect Password" });
+              res.status(422).json({ error: "Incorrect Password" });
             }
           }
         );
