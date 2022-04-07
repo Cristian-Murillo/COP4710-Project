@@ -71,8 +71,7 @@ const EventList = () => {
   return (
     <div>
       <div>
-        {" "}
-        <Grid sx={{ display: "inlineflex", overflow: "auto" }}>
+        <Grid sx={{ display: "inlineflex", gap: 2, overflow: "auto" }}>
           <Typography variant="b1">PUBLIC</Typography>
           {eventList.map((e) => (
             <Event key={e.event_id} event={e} />
@@ -80,7 +79,7 @@ const EventList = () => {
         </Grid>
       </div>
       <div>
-        <Grid sx={{ display: "inlineflex", overflow: "auto" }}>
+        <Grid sx={{ display: "inlineflex", gap: 2, overflow: "auto" }}>
           <Typography variant="b1">RSO</Typography>
           {rsoList.map((e) => (
             <Event key={e.event_id} event={e} />
@@ -88,7 +87,7 @@ const EventList = () => {
         </Grid>
       </div>
       <div>
-        <Grid sx={{ display: "inlineflex", overflow: "auto" }}>
+        <Grid sx={{ display: "inlineflex", gap: 2, overflow: "auto" }}>
           <Typography variant="b1">PRIVATE</Typography>
           {privateEventList.map((e) => (
             <Event key={e.event_id} event={e} />
