@@ -34,22 +34,81 @@ function disconnectDB() {
   });
 }
 
+// Post a Review
 router.post("/review", async (req, res) => {
-    connectDB();
-    db.query("INSERT INTO comments (user_id, event_id, comment, ratings) VALUES (?, ?, ?, ?)",
+  connectDB();
+  db.query(
+    "INSERT INTO comments (user_id, event_id, comment, ratings) VALUES (?, ?, ?, ?)",
     [req.body.user_id, req.body.event_id, req.body.comment, req.body.ratings],
     (error, result) => {
-        if (error) {
-          console.log(error);
-          res.status(422).json({ ERR: error });
-        } else {
-          res.status(200).json({
-            text: "review Successful ",
-          });
-        }
+      if (error) {
+        console.log(error);
+        res.status(422).json({ ERR: error });
+      } else {
+        res.status(200).json({
+          text: "Review Posted Successfully",
+        });
       }
-    );
-    disconnectDB();
+    }
+  );
+  disconnectDB();
 });
 
+// Update comments/ratings
+router.post("/update", async (req, res) => {
+  connectDB();
+  db.query(
+    "UPDATE comments set comment = ?, ratings = ? where user_id = ? and event_id = ?",
+    [req.body.comment, req.body.ratings, req.body.user_id, req.body.event_id],
+    (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(422).json({ ERR: error });
+      } else {
+        res.status(200).json({
+          text: "Review Updated Successfully ",
+        });
+      }
+    }
+  );
+  disconnectDB();
+});
+
+// Delete comments
+router.delete("/delete", async (req, res) => {
+  connectDB();
+  db.query(
+    "DELETE FROM comments where user_id = ? and event_id = ?",
+    [req.body.user_id, req.body.event_id],
+    (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(422).json({ ERR: error });
+      } else {
+        res.status(200).json({
+          text: "Review Deleted Successfully ",
+        });
+      }
+    }
+  );
+  disconnectDB();
+});
+
+// Get All Reviews from An Event
+router.get("/reviews/:event_id", async (req, res) => {
+  connectDB();
+  db.query(
+    "SELECT * FROM comments where event_id = ?",
+    [req.params.event_id],
+    (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(422).json({ ERR: error });
+      } else {
+        res.send(result);
+      }
+    }
+  );
+  disconnectDB();
+});
 module.exports = router;
