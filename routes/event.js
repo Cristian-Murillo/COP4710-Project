@@ -1,7 +1,5 @@
-const { Splitscreen } = require("@mui/icons-material");
 const express = require("express");
 const mysql = require("mysql");
-const { UCS2_DANISH_CI } = require("mysql/lib/protocol/constants/charsets");
 const router = express.Router();
 require("dotenv").config();
 
@@ -62,25 +60,33 @@ router.get("/rso", async (req, res) => {
 
 // get all Private events
 router.get("/private/:id", async (req, res) => {
-
   connectDB();
-  db.query("SELECT email FROM user WHERE user_id = ?", req.params.id, (error, result) => {
-    if (error) {
-      console.log(error);
-    } else {
-      let email = result[0].email;
-      let domain = email.substring(email.lastIndexOf('@') + 1);
-      domain = '%' + domain +'%';
-      connectDB();
-      db.query("SELECT * FROM event WHERE isPrivate=1 AND contactEmail LIKE ?", domain, (error, results) => {
-        if (error) {
-          console.log(error);
-        } else {
-          res.send(results);
-        }
-      });disconnectDB();
+  db.query(
+    "SELECT email FROM user WHERE user_id = ?",
+    req.params.id,
+    (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        let email = result[0].email;
+        let domain = email.substring(email.lastIndexOf("@") + 1);
+        domain = "%" + domain + "%";
+        connectDB();
+        db.query(
+          "SELECT * FROM event WHERE isPrivate=1 AND contactEmail LIKE ?",
+          domain,
+          (error, results) => {
+            if (error) {
+              console.log(error);
+            } else {
+              res.send(results);
+            }
+          }
+        );
+        disconnectDB();
+      }
     }
-  });
+  );
   disconnectDB();
 });
 
