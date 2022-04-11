@@ -45,9 +45,7 @@ router.post("/review", async (req, res) => {
         console.log(error);
         res.status(422).json({ ERR: error });
       } else {
-        res.status(200).json({
-          text: "Review Posted Successfully",
-        });
+        res.status(200).json("Review Posted Successfully");
       }
     }
   );
@@ -68,9 +66,7 @@ router.post("/update", async (req, res) => {
         if (result.affectedRows === 0) {
           res.status(200).json("You can't edit a review you didnt post");
         } else {
-          res.status(200).json({
-            text: "Review Updated Successfully ",
-          });
+          res.status(200).json("Review Updated Successfully ");
         }
       }
     }
@@ -89,9 +85,7 @@ router.delete("/delete", async (req, res) => {
         console.log(result.affectedRows);
         res.status(200).json("You didn't post a review for this event");
       } else {
-        res.status(200).json({
-          text: "Review Deleted Successfully ",
-        });
+        res.status(200).json("Review Deleted Successfully ");
       }
     }
   );

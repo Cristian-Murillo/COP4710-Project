@@ -145,7 +145,7 @@ router.post("/login", async (req, res) => {
               };
               res.status(200).json(user);
             } else {
-              res.status(422).json({ error: "Incorrect Password" });
+              res.status(412).json({ error: "Incorrect Password" });
             }
           }
         );
@@ -239,10 +239,10 @@ router.post("/join/rso", async (req, res) => {
     req.body.rso_name,
     (error, result) => {
       if (error) {
-        res.status(412).json({ err: error });
+        console.log(error);
       } else {
         if (result.length === 0) {
-          res.status(412).json({ msg: "rso doesn't exist" });
+          res.status(200).json({ msg: "rso doesn't exist" });
         } else {
           connectDB();
           db.query(

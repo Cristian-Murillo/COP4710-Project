@@ -5,7 +5,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { UserContext } from "./UserContext";
 import axios from "axios";
 import { Button } from "@mui/material";
-import { Typography, TextField } from "@mui/material";
+import { Typography, TextField, Snackbar } from "@mui/material";
 
 const labels = {
   0.5: "Useless",
@@ -28,6 +28,15 @@ export default function HoverRating({ event }) {
   const [value, setValue] = React.useState(2);
   const [hover, setHover] = React.useState(-1);
   const [commentValue, setCommentValue] = React.useState("");
+  const [message, setMessage] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const { user } = React.useContext(UserContext);
 
@@ -54,6 +63,8 @@ export default function HoverRating({ event }) {
         const resp = await axios(config);
 
         console.log(resp.data);
+        setMessage(resp.data);
+        setOpen(true);
       } catch (err) {
         console.error(err);
       }
@@ -81,6 +92,8 @@ export default function HoverRating({ event }) {
         const resp = await axios(config);
 
         console.log(resp.data);
+        setMessage(resp.data);
+        setOpen(true);
       } catch (err) {
         console.log("catching " + err);
       }
@@ -110,14 +123,25 @@ export default function HoverRating({ event }) {
         const resp = await axios(config);
 
         console.log(resp.data);
+        setMessage(resp.data);
+        setOpen(true);
       } catch (err) {
         console.log("catching " + err);
       }
     };
     updateReview();
   };
+
   return (
     <>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={message}
+        
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      />
       <TextField
         autoFocus
         margin="dense"

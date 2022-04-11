@@ -6,10 +6,10 @@ import {
   CardContent,
   Typography,
   CardActions,
-  IconButton,
   FormControlLabel,
   Radio,
   RadioGroup,
+  Snackbar,
 } from "@mui/material";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import AddIcon from "@mui/icons-material/Add";
@@ -27,14 +27,22 @@ const Event = () => {
   const [privateEvent, setPrivateEvent] = useState(0);
   const [rso, setRso] = useState(0);
   const [eventName, setEventName] = useState("");
+  const [rso_name, setRso_name] = useState("");
   const [address, setAddress] = useState("");
-  const [time, setTime] = useState("");
+  const [message, setMessage] = useState("");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const bp = require("../Components/Path");
 
   const { user } = useContext(UserContext);
-  console.log(publicEvent + " " + privateEvent + " " + rso);
+  const [open, setOpen] = React.useState(false);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const postEvent = async () => {
     const eventData = {
@@ -58,7 +66,35 @@ const Event = () => {
 
       const resp = await axios(config);
 
-      console.log(resp.data);
+      setMessage(resp.data.msg);
+      setOpen(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const postRsoEvent = async () => {
+    const rsoData = {
+      id: user.id,
+      eventName,
+      rso_name,
+      eventDate: moment(startDate).format(),
+      description,
+      contactEmail: user.email,
+      address,
+    };
+    try {
+      var config = {
+        method: "post",
+        url: bp.buildPath("api/events/create/rso"),
+        // headers: { Authorization:"TOKEN GOES HERE"}
+        data: rsoData,
+      };
+
+      const resp = await axios(config);
+
+      setMessage(resp.data.msg);
+      setOpen(true);
     } catch (err) {
       console.error(err);
     }
@@ -69,91 +105,127 @@ const Event = () => {
       <div>
         <AppBar />
       </div>
-      <Card variant="outlined">
-        <CardHeader
-          action={
-            <IconButton>
-              <AddIcon />
-            </IconButton>
-          }
-          title="Create Event"
-          subheader="hi"
-        ></CardHeader>
-        <CardContent>
-          <TextField
-            label="Event Name"
-            onChange={(e) => {
-              setEventName(e.target.value);
-            }}
-          />
-          <TextField
-            label="Address"
-            onChange={(e) => {
-              setAddress(e.target.value);
-            }}
-          />
-          <TextField
-            label="describe the event"
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
-          />
-          <CardActions>
-            <RadioGroup>
-              <FormControlLabel
-                value="public"
-                control={
-                  <Radio
-                    onChange={() => {
-                      setPublicEvent(1);
-                      setPrivateEvent(0);
-                      setRso(0);
-                    }}
-                  />
-                }
-                label="Public"
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={message}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      />
+
+      {user.isAdmin || user.isSuperAdmin ? (
+        <div>
+          <Card sx={{ width: "50%", height: "50%", m: "auto" }} elevation={24}>
+            <CardHeader
+              // action={
+              //   <IconButton>
+              //     <AddIcon />
+              //   </IconButton>
+              // }
+              title="Create Event"
+              subheader="Fill out the fields below and create you event"
+            ></CardHeader>
+            <CardContent>
+              <TextField
+                label="Event Name"
+                onChange={(e) => {
+                  setEventName(e.target.value);
+                }}
               />
-              <FormControlLabel
-                value="private"
-                control={
-                  <Radio
-                    onChange={() => {
-                      setPublicEvent(0);
-                      setPrivateEvent(1);
-                      setRso(0);
-                    }}
-                  />
-                }
-                label="Private"
+              {rso === 1 && (
+                <TextField
+                  label="RSO Name"
+                  onChange={(e) => {
+                    setEventName(e.target.value);
+                  }}
+                />
+              )}
+              <TextField
+                label="Address"
+                onChange={(e) => {
+                  setAddress(e.target.value);
+                }}
               />
-              <FormControlLabel
-                value="rso"
-                control={
-                  <Radio
-                    onChange={() => {
-                      setPublicEvent(0);
-                      setPrivateEvent(0);
-                      setRso(1);
-                    }}
-                  />
-                }
-                label="RSO"
+              <TextField
+                label="describe the event"
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
               />
-            </RadioGroup>
-          </CardActions>
-          <CardActions>
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              showTimeSelect
-              dateFormat="Pp"
-            />
-          </CardActions>
-        </CardContent>
-        <CardActions>
-          <Button onClick={postEvent}>Create Event</Button>
-        </CardActions>
-      </Card>
+              <CardActions>
+                <RadioGroup>
+                  <FormControlLabel
+                    value="public"
+                    control={
+                      <Radio
+                        onChange={() => {
+                          setPublicEvent(1);
+                          setPrivateEvent(0);
+                          setRso(0);
+                        }}
+                      />
+                    }
+                    label="Public"
+                  />
+                  <FormControlLabel
+                    value="private"
+                    control={
+                      <Radio
+                        onChange={() => {
+                          setPublicEvent(0);
+                          setPrivateEvent(1);
+                          setRso(0);
+                        }}
+                      />
+                    }
+                    label="Private"
+                  />
+                  {
+                    <FormControlLabel
+                      value="rso"
+                      control={
+                        <Radio
+                          onChange={() => {
+                            setPublicEvent(0);
+                            setPrivateEvent(0);
+                            setRso(1);
+                          }}
+                        />
+                      }
+                      label="RSO"
+                    />
+                  }
+                </RadioGroup>
+              </CardActions>
+              <CardActions>
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  showTimeSelect
+                  dateFormat="Pp"
+                />
+              </CardActions>
+            </CardContent>
+            <CardActions>
+              <Button onClick={postEvent}>Create Event</Button>
+            </CardActions>
+          </Card>
+        </div>
+      ) : (
+        <Card sx={{}}>
+          <CardContent>
+            <Typography
+              sx={{ width: "50%", height: "50%", m: "auto" }}
+              variant="h3"
+            >
+              404 Page Not Found
+            </Typography>
+            <Typography sx={{ display: "right" }} variant="h6">
+              User doesn't have correct credentials to access this page
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

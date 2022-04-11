@@ -1,6 +1,7 @@
 import React from "react";
 import EventList from "../Components/EventList";
 import { default as AppBar } from "../Components/AppBar";
+import RSO from "../Components/RSO";
 
 const Home = () => {
   return (
@@ -12,6 +13,9 @@ const Home = () => {
       Home Page
       <br />
       <EventList />
+      <div>
+        <RSO />
+      </div>
     </div>
   );
 };

@@ -1,12 +1,12 @@
 import React from "react";
 import Signin from "../Components/Signin";
 
-const Login = (setUser) => {
+const Login = () => {
   return (
     <div>
       Login Page
       <br />
-      <Signin setUser />
+      <Signin />
     </div>
   );
 };

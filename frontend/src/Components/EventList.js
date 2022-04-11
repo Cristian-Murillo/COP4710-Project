@@ -71,7 +71,13 @@ const EventList = () => {
   return (
     <div>
       <div>
-        <Grid sx={{ display: "inlineflex", gap: 2, overflow: "auto" }}>
+        <Grid
+          sx={{
+            display: "inlineflex",
+            gap: 2,
+            overflow: "auto",
+          }}
+        >
           <Typography variant="b1">PUBLIC</Typography>
           {eventList.map((e) => (
             <Event key={e.event_id} event={e} />

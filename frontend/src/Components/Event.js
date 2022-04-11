@@ -56,7 +56,7 @@ function Event({ event }) {
 
   return (
     <div>
-      <Card variant="outlined">
+      <Card variant="outlined" sx={{}}>
         <CardHeader
           action={
             <IconButton>

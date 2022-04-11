@@ -171,17 +171,20 @@ export default function PrimarySearchAppBar() {
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2 }}
+            onClick={async (e) => {
+              navigate("/");
+            }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography
+          {/* <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            MUI
-          </Typography>
+            
+          </Typography> */}
           {/* <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -209,7 +212,9 @@ export default function PrimarySearchAppBar() {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              // onClick={handleProfileMenuOpen}
+              onClick={async (e) => {
+                navigate("/event");
+              }}
               color="inherit"
             >
               <AccountCircle />
