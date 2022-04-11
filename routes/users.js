@@ -20,7 +20,7 @@ function connectDB() {
     if (err) {
       console.log(err);
     }
-    console.log("MySQL Database Connected");
+    // console.log("MySQL Database Connected");
   });
 }
 
@@ -48,7 +48,7 @@ const authenticateJWT = (req, res, next) => {
 function disconnectDB() {
   db.end(function (err) {
     if (err) throw err;
-    console.log("DISCONNECTED FROM DB");
+    // console.log("DISCONNECTED FROM DB");
   });
 }
 

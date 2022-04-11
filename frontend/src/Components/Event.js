@@ -15,15 +15,17 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 import HoverRating from "./Review";
+import axios from "axios";
 
 function Event({ event }) {
   const { event_id, eventName, eventDate, description, contactEmail, address } =
     event;
   const [open, setOpen] = useState(false);
-  const [commentValue, setCommentValue] = useState("");
+  const [reviewList, setReviewList] = useState([]);
+  const bp = require("./Path");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -32,6 +34,26 @@ function Event({ event }) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    const getReviews = async () => {
+      try {
+        var config = {
+          method: "get",
+          url: bp.buildPath("api/comments/reviews/" + event_id),
+          // headers: { Authorization:"TOKEN GOES HERE"}
+        };
+
+        const resp = await axios(config);
+
+        setReviewList(resp.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getReviews();
+  }, [open]);
+
   return (
     <div>
       <Card variant="outlined">
@@ -65,31 +87,33 @@ function Event({ event }) {
           <DialogTitle>Reviews</DialogTitle>
           <DialogContent sx={{ maxHeight: 200, maxWidth: 1 }}>
             <DialogContentText>
-              REVIEW DATA SOMEWHERE HERE REVIEW DATA SOMEWHERE HERE REVIEW DATA
-              SOMEWHERE HERE REVIEW DATA SOMEWHERE HERE REVIEW DATA SOMEWHERE
-              HERE REVIEW DATA SOMEWHERE HERE REVIEW DATA SOMEWHERE HERE REVIEW
-              DATA SOMEWHERE HERE REVIEW DATA SOMEWHERE HERE REVIEW DATA
-              SOMEWHERE HERE REVIEW DATA SOMEWHERE HERE REVIEW DATA SOMEWHERE
-              HERE REVIEW DATA SOMEWHERE HERE REVIEW DATA SOMEWHERE HERE REVIEW
-              DATA SOMEWHERE HERE REVIEW DATA SOMEWHERE HERE REVIEW DATA
-              SOMEWHERE HERE REVIEW DATA SOMEWHERE HERE
+              {reviewList.map((e, idx) => {
+                return (
+                  <div key={idx}>
+                    {e.comment}
+                    <div>{e.ratings}</div>
+                  </div>
+                );
+              })}
             </DialogContentText>
           </DialogContent>
           <DialogContent>
-            <TextField
+            {/* <TextField
               autoFocus
               margin="dense"
               id="comment"
               label="Review"
               value={commentValue}
+              onChange={(e) => {
+                setCommentValue(e.target.value);
+              }}
               fullWidth
               variant="standard"
-            />{" "}
-            <HoverRating event={event_id} comment={commentValue} />
+            />{" "} */}
+            <HoverRating event={event_id} />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleClose}>Post Review</Button>
+            <Button onClick={handleClose}>Close</Button>
           </DialogActions>
         </Dialog>
       </div>

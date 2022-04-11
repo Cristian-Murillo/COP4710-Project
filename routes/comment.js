@@ -21,7 +21,7 @@ function connectDB() {
     if (err) {
       console.log(err);
     }
-    console.log("MySQL Database Connected");
+    // console.log("MySQL Database Connected");
   });
 }
 
@@ -30,7 +30,7 @@ function connectDB() {
 function disconnectDB() {
   db.end(function (err) {
     if (err) throw err;
-    console.log("DISCONNECTED FROM DB");
+    // console.log("DISCONNECTED FROM DB");
   });
 }
 
@@ -65,9 +65,13 @@ router.post("/update", async (req, res) => {
         console.log(error);
         res.status(422).json({ ERR: error });
       } else {
-        res.status(200).json({
-          text: "Review Updated Successfully ",
-        });
+        if (result.affectedRows === 0) {
+          res.status(200).json("You can't edit a review you didnt post");
+        } else {
+          res.status(200).json({
+            text: "Review Updated Successfully ",
+          });
+        }
       }
     }
   );
@@ -81,9 +85,9 @@ router.delete("/delete", async (req, res) => {
     "DELETE FROM comments where user_id = ? and event_id = ?",
     [req.body.user_id, req.body.event_id],
     (error, result) => {
-      if (error) {
-        console.log(error);
-        res.status(422).json({ ERR: error });
+      if (result.affectedRows === 0) {
+        console.log(result.affectedRows);
+        res.status(200).json("You didn't post a review for this event");
       } else {
         res.status(200).json({
           text: "Review Deleted Successfully ",
