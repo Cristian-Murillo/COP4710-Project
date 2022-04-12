@@ -14,6 +14,7 @@ const Home = () => {
       <br />
       <EventList />
       <div>
+        <br />
         <RSO />
       </div>
     </div>

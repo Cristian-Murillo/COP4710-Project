@@ -16,6 +16,8 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import HomeIcon from "@mui/icons-material/Home";
+import CreateIcon from "@mui/icons-material/Create";
 import { useNavigate } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
@@ -123,12 +125,25 @@ export default function PrimarySearchAppBar() {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+        <IconButton
+          size="large"
+          aria-label="show 4 new mails"
+          color="inherit"
+          onClick={async (e) => {
+            navigate("/mycalendar");
+          }}
+        >
           {/* <Badge badgeContent={4} color="error">
           </Badge> */}
           <CalendarMonthIcon />
         </IconButton>
-        <p>My Calendar</p>
+        <p
+          onClick={async (e) => {
+            navigate("/mycalendar");
+          }}
+        >
+          My Calendar
+        </p>
       </MenuItem>
       {/* <MenuItem>
         <IconButton
@@ -154,9 +169,9 @@ export default function PrimarySearchAppBar() {
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle />
+          <CreateIcon />
         </IconButton>
-        <p>Profile</p>
+        <p>Create Events</p>
       </MenuItem>
     </Menu>
   );
@@ -175,7 +190,7 @@ export default function PrimarySearchAppBar() {
               navigate("/");
             }}
           >
-            <MenuIcon />
+            <HomeIcon />
           </IconButton>
           {/* <Typography
             variant="h6"
@@ -200,6 +215,9 @@ export default function PrimarySearchAppBar() {
               size="large"
               aria-label="show 4 new mails"
               color="inherit"
+              onClick={async (e) => {
+                navigate("/mycalendar");
+              }}
             >
               {/* <Badge badgeContent={4} color="error">
               </Badge> */}
@@ -217,7 +235,7 @@ export default function PrimarySearchAppBar() {
               }}
               color="inherit"
             >
-              <AccountCircle />
+              <CreateIcon />
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>

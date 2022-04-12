@@ -21,6 +21,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import axios from "axios";
+import { create } from "@mui/material/styles/createTransitions";
 
 const Event = () => {
   const [publicEvent, setPublicEvent] = useState(0);
@@ -32,6 +33,7 @@ const Event = () => {
   const [message, setMessage] = useState("");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState(new Date());
+  const [rsoGroupName, setRsoGroupName] = useState("");
   const bp = require("../Components/Path");
 
   const { user } = useContext(UserContext);
@@ -99,6 +101,27 @@ const Event = () => {
       console.error(err);
     }
   };
+  const createRSO = async () => {
+    const rsoGroupData = {
+      id: user.id,
+      rso_name: rsoGroupName,
+    };
+    try {
+      var config = {
+        method: "post",
+        url: bp.buildPath("api/users/create/rso"),
+        // headers: { Authorization:"TOKEN GOES HERE"}
+        data: rsoGroupData,
+      };
+
+      const resp = await axios(config);
+
+      setMessage(resp.data.msg);
+      setOpen(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div>
@@ -122,7 +145,7 @@ const Event = () => {
               //     <AddIcon />
               //   </IconButton>
               // }
-              title="Create Event"
+              title="Create event for your university"
               subheader="Fill out the fields below and create you event"
             ></CardHeader>
             <CardContent>
@@ -206,8 +229,29 @@ const Event = () => {
                 />
               </CardActions>
             </CardContent>
-            <CardActions>
-              <Button onClick={postEvent}>Create Event</Button>
+            <CardActions sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button onClick={rso === 1 ? postRsoEvent : postEvent}>
+                Create Event
+              </Button>
+            </CardActions>
+          </Card>
+          <br />
+          <Card sx={{ width: "50%", height: "50%", m: "auto" }} elevation={24}>
+            <CardHeader
+              title="Create RSO Group"
+              subheader="Create a group name and start finding people to join your group"
+            />
+            <CardContent>
+              <TextField
+                variant="standard"
+                label="Name of group"
+                onChange={(e) => {
+                  setRsoGroupName(e.target.value);
+                }}
+              />
+            </CardContent>
+            <CardActions sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button onClick={createRSO}>Create RSO</Button>
             </CardActions>
           </Card>
         </div>

@@ -60,7 +60,7 @@ const EventList = () => {
 
         const resp = await axios(config);
 
-        setRsoList(resp.data);
+        setPrivateEventList(resp.data);
       } catch (err) {
         console.error(err);
       }
@@ -70,36 +70,42 @@ const EventList = () => {
 
   return (
     <div>
-      <div>
-        <Grid
-          sx={{
-            display: "inlineflex",
-            gap: 2,
-            overflow: "auto",
-          }}
-        >
-          <Typography variant="b1">PUBLIC</Typography>
-          {eventList.map((e) => (
-            <Event key={e.event_id} event={e} />
-          ))}
-        </Grid>
-      </div>
-      <div>
-        <Grid sx={{ display: "inlineflex", gap: 2, overflow: "auto" }}>
-          <Typography variant="b1">RSO</Typography>
-          {rsoList.map((e) => (
-            <Event key={e.event_id} event={e} />
-          ))}
-        </Grid>
-      </div>
-      <div>
-        <Grid sx={{ display: "inlineflex", gap: 2, overflow: "auto" }}>
-          <Typography variant="b1">PRIVATE</Typography>
-          {privateEventList.map((e) => (
-            <Event key={e.event_id} event={e} />
-          ))}
-        </Grid>
-      </div>
+      {eventList.length > 0 && (
+        <div>
+          <Grid
+            sx={{
+              display: "inlineflex",
+              gap: 2,
+              overflow: "auto",
+            }}
+          >
+            <Typography variant="h6">PUBLIC</Typography>
+            {eventList.map((e) => (
+              <Event key={e.event_id} event={e} />
+            ))}
+          </Grid>
+        </div>
+      )}
+      {rsoList.length > 0 && (
+        <div>
+          <Grid sx={{ display: "inlineflex", gap: 2, overflow: "auto" }}>
+            <Typography variant="h6">RSO</Typography>
+            {rsoList.map((e) => (
+              <Event key={e.event_id} event={e} />
+            ))}
+          </Grid>
+        </div>
+      )}
+      {privateEventList.length > 0 && (
+        <div>
+          <Grid sx={{ display: "inlineflex", gap: 2, overflow: "auto" }}>
+            <Typography variant="h6">PRIVATE</Typography>
+            {privateEventList.map((e) => (
+              <Event key={e.event_id} event={e} />
+            ))}
+          </Grid>
+        </div>
+      )}
     </div>
   );
 };

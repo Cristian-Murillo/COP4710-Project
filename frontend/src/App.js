@@ -11,6 +11,7 @@ import Home from "./Pages/Home";
 import Event from "./Pages/Event";
 import { Link } from "react-router-dom";
 import { UserContext } from "./Components/UserContext";
+import Calendar from "./Pages/Calendar";
 
 function App() {
   const { user } = useContext(UserContext);
@@ -27,6 +28,10 @@ function App() {
         <Route
           path="/event"
           element={user ? <Event /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/mycalendar"
+          element={user ? <Calendar /> : <Navigate to="/login" />}
         />
       </Routes>
     </Router>
