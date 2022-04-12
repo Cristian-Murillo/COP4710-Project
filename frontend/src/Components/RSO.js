@@ -44,6 +44,28 @@ export default function RSO() {
     }
   };
 
+  const leaveRso = async () => {
+    const rsoInfo = {
+      rso_name,
+      id: user.id,
+    };
+    var config = {
+      method: "delete",
+      url: bp.buildPath("api/users/leave/rso"),
+      // headers: { Authorization:"TOKEN GOES HERE"}
+      data: rsoInfo,
+    };
+    try {
+      const resp = await axios(config);
+
+      console.log(resp.data);
+      setMessage(resp.data.msg);
+      setOpen(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <Snackbar
@@ -65,6 +87,19 @@ export default function RSO() {
       />
       <Button size="large" onClick={joinRso}>
         Check
+      </Button>
+      <br />
+      <br />
+      <Typography variant="body1">Want to leave an RSO?</Typography>
+      <TextField
+        variant="standard"
+        label="RSO Name to leave"
+        onChange={(e) => {
+          setRso_Name(e.target.value);
+        }}
+      />
+      <Button size="large" onClick={leaveRso}>
+        Leave
       </Button>
     </>
   );

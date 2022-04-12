@@ -264,4 +264,41 @@ router.post("/join/rso", async (req, res) => {
   disconnectDB();
 });
 
+// Leave RSO group
+router.delete("/leave/rso", async (req, res) => {
+  connectDB();
+  db.query(
+    "SELECT rso_name FROM rso WHERE rso_name=?",
+    req.body.rso_name,
+    (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        if (result.length === 0) {
+          res.status(200).json({ msg: "rso doesn't exist" });
+        } else {
+          connectDB();
+          db.query(
+            "DELETE FROM rso WHERE rso_name=? AND user_id=?",
+            [req.body.rso_name, req.body.id],
+            (error, result) => {
+              if (error) {
+                console.log(error);
+              } else {
+                if (result.affectedRows === 0) {
+                  res.status(200).json({ msg: "you are not in this rso" });
+                } else {
+                  res.status(200).json({ msg: "You left rso" });
+                }
+              }
+            }
+          );
+          disconnectDB();
+        }
+      }
+    }
+  );
+  disconnectDB();
+});
+
 module.exports = router;

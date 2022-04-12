@@ -183,7 +183,7 @@ router.post("/create/rso", async (req, res) => {
                   );
                   disconnectDB();
                 } else {
-                  res.status(412).json({
+                  res.status(200).json({
                     msg: "Not enough members in rso group to create event",
                   });
                 }

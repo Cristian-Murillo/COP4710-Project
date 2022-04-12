@@ -124,27 +124,6 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 4 new mails"
-          color="inherit"
-          onClick={async (e) => {
-            navigate("/mycalendar");
-          }}
-        >
-          {/* <Badge badgeContent={4} color="error">
-          </Badge> */}
-          <CalendarMonthIcon />
-        </IconButton>
-        <p
-          onClick={async (e) => {
-            navigate("/mycalendar");
-          }}
-        >
-          My Calendar
-        </p>
-      </MenuItem>
       {/* <MenuItem>
         <IconButton
           size="large"
@@ -211,19 +190,6 @@ export default function PrimarySearchAppBar() {
           </Search> */}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-              onClick={async (e) => {
-                navigate("/mycalendar");
-              }}
-            >
-              {/* <Badge badgeContent={4} color="error">
-              </Badge> */}
-              <CalendarMonthIcon />
-            </IconButton>
-
             <IconButton
               size="large"
               edge="end"

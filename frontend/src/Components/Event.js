@@ -58,11 +58,6 @@ function Event({ event }) {
     <div>
       <Card variant="outlined" sx={{}}>
         <CardHeader
-          action={
-            <IconButton>
-              <AddIcon />
-            </IconButton>
-          }
           title={eventName}
           subheader={moment(eventDate).calendar()}
         ></CardHeader>
@@ -91,7 +86,7 @@ function Event({ event }) {
                 return (
                   <div key={idx}>
                     {e.comment}
-                    <div>{e.ratings}</div>
+                    <div>{e.ratings + " star rating"}</div>
                   </div>
                 );
               })}

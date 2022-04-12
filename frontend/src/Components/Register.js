@@ -122,19 +122,36 @@ const Register = () => {
               value="user"
               control={
                 <Radio
-                  onChange={() => setAdmin(admin) && setSuperAdmin(superAdmin)}
+                  onChange={() => {
+                    setAdmin(0);
+                    setSuperAdmin(0);
+                  }}
                 />
               }
               label="User"
             />
             <FormControlLabel
               value="superAdmin"
-              control={<Radio onChange={() => setSuperAdmin(!superAdmin)} />}
+              control={
+                <Radio
+                  onChange={() => {
+                    setAdmin(0);
+                    setSuperAdmin(1);
+                  }}
+                />
+              }
               label="Super Admin"
             />
             <FormControlLabel
               value="admin"
-              control={<Radio onChange={() => setAdmin(!admin)} />}
+              control={
+                <Radio
+                  onChange={() => {
+                    setAdmin(1);
+                    setSuperAdmin(0);
+                  }}
+                />
+              }
               label="Admin"
             />
           </RadioGroup>

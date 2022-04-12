@@ -28,7 +28,7 @@ const Event = () => {
   const [privateEvent, setPrivateEvent] = useState(0);
   const [rso, setRso] = useState(0);
   const [eventName, setEventName] = useState("");
-  const [rso_name, setRso_name] = useState("");
+  const [rsoName, setRsoName] = useState("");
   const [address, setAddress] = useState("");
   const [message, setMessage] = useState("");
   const [description, setDescription] = useState("");
@@ -79,12 +79,13 @@ const Event = () => {
     const rsoData = {
       id: user.id,
       eventName,
-      rso_name,
+      rso_name: rsoName,
       eventDate: moment(startDate).format(),
       description,
       contactEmail: user.email,
       address,
     };
+    console.log(rsoData);
     try {
       var config = {
         method: "post",
@@ -98,9 +99,10 @@ const Event = () => {
       setMessage(resp.data.msg);
       setOpen(true);
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
   };
+
   const createRSO = async () => {
     const rsoGroupData = {
       id: user.id,
@@ -159,7 +161,7 @@ const Event = () => {
                 <TextField
                   label="RSO Name"
                   onChange={(e) => {
-                    setEventName(e.target.value);
+                    setRsoName(e.target.value);
                   }}
                 />
               )}
