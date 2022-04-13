@@ -106,25 +106,44 @@ router.post("/create/", async (req, res) => {
         if (result.length === 0) {
           res.status(200).json({ msg: "Not authorized to create event" });
         } else {
-          // authorized to create event
+          // Check table for for no overlapping events
           connectDB();
           db.query(
-            "INSERT INTO event (eventName, eventDate, description, contactEmail, isRSO, isPublic, isPrivate, address) VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
-            [
-              req.body.eventName,
-              req.body.eventDate,
-              req.body.description,
-              req.body.contactEmail,
-              req.body.isRSO,
-              req.body.isPublic,
-              req.body.isPrivate,
-              req.body.address,
-            ],
-            (error, result) => {
-              if (error) {
-                console.log(error);
+            "SELECT * FROM event WHERE eventDate=? and address=?",
+            [req.body.eventDate, req.body.address],
+            (ERROR, RESULT) => {
+              if (ERROR) {
+                console.log(ERROR);
               } else {
-                res.status(200).json({ msg: "Event created" });
+                if (RESULT.length === 0) {
+                  // authorized to create event
+                  connectDB();
+                  db.query(
+                    "INSERT INTO event (eventName, eventDate, description, contactEmail, isRSO, isPublic, isPrivate, address) VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
+                    [
+                      req.body.eventName,
+                      req.body.eventDate,
+                      req.body.description,
+                      req.body.contactEmail,
+                      req.body.isRSO,
+                      req.body.isPublic,
+                      req.body.isPrivate,
+                      req.body.address,
+                    ],
+                    (error, result) => {
+                      if (error) {
+                        console.log(error);
+                      } else {
+                        res.status(200).json({ msg: "Event created" });
+                      }
+                    }
+                  );
+                  disconnectDB();
+                } else {
+                  res.status(200).json({
+                    msg: "This location and time slot is already booked. Please choose another location and/or time slot",
+                  });
+                }
               }
             }
           );
