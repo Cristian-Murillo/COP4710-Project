@@ -74,7 +74,7 @@ const EventList = () => {
         <div>
           <Grid
             sx={{
-              display: "inlineflex",
+              display: "flex",
               gap: 2,
               overflow: "auto",
             }}

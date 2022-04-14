@@ -10,7 +10,6 @@ const Home = () => {
       <div>
         <AppBar />
       </div>
-      Home Page
       <br />
       <EventList />
       <div>

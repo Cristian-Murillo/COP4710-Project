@@ -56,14 +56,25 @@ function Event({ event }) {
 
   return (
     <div>
-      <Card variant="outlined" sx={{}}>
+      <Card
+        variant="outlined"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <CardHeader
           title={eventName}
           subheader={moment(eventDate).calendar()}
         ></CardHeader>
-        <CardContent>
-          <Typography variant="body2">{description}</Typography>
-          <Typography variant="caption text" sx={{ textOverflow: "ellipsis" }}>
+        <CardContent sx={{ textOverflow: "ellipsis" }}>
+          <Typography
+            variant="body2"
+            sx={{ textOverflow: "ellipsis", overflow: "hidden" }}
+          >
+            {description}
+          </Typography>
+          <Typography variant="caption text">
             <br />
             {contactEmail}
             <br />
