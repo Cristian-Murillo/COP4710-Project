@@ -61,6 +61,8 @@ function Event({ event }) {
         sx={{
           display: "flex",
           flexDirection: "column",
+          width: "350px",
+          height: "325px",
         }}
       >
         <CardHeader
@@ -82,7 +84,7 @@ function Event({ event }) {
           </Typography>
         </CardContent>
 
-        <CardActions>
+        <CardActions sx={{ justifyContent: "flex-start" }}>
           <IconButton onClick={handleClickOpen}>
             <RateReviewIcon />
           </IconButton>
